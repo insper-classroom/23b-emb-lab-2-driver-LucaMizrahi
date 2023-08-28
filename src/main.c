@@ -125,8 +125,12 @@ void _pio_set_output(Pio *p_pio, const uint32_t ul_mask, const uint32_t ul_defau
 	p_pio->PIO_PER = ul_mask;
 }
 
-uint32_t pio_get(Pio *p_pio, const pio_type_t ul_type, const uint32_t ul_mask){
-
+uint32_t _pio_get(Pio *p_pio, const pio_type_t ul_type, const uint32_t ul_mask){
+	if(ul_type == PIO_INPUT){
+		return(p_pio->PIO_PDSR & ul_mask);
+	} else {
+		return(p_pio->PIO_ODSR & ul_mask);
+	}
 }
 
 /************************************************************************/
@@ -168,7 +172,7 @@ int main(void) {
   init();
 
   while (1) {
-    if (!pio_get(BUT1_PIO, PIO_INPUT,
+    if (!_pio_get(BUT1_PIO, PIO_INPUT,
                  BUT1_PIO_IDX_MASK)) { // Caso aperte Botao 1
       for (int i = 0; i < 5; i++) {
         _pio_set(LED1_PIO, LED1_PIO_IDX_MASK);
@@ -178,7 +182,7 @@ int main(void) {
       }
       _pio_clear(LED1_PIO, LED1_PIO_IDX_MASK);
     }
-    if (!pio_get(BUT2_PIO, PIO_INPUT,
+    if (!_pio_get(BUT2_PIO, PIO_INPUT,
                  BUT2_PIO_IDX_MASK)) { // Caso aperte Botao 2
       for (int i = 0; i < 5; i++) {
         _pio_set(LED2_PIO, LED2_PIO_IDX_MASK);
@@ -188,7 +192,7 @@ int main(void) {
       }
       _pio_clear(LED2_PIO, LED2_PIO_IDX_MASK);
     }
-    if (!pio_get(BUT3_PIO, PIO_INPUT,
+    if (!_pio_get(BUT3_PIO, PIO_INPUT,
                  BUT3_PIO_IDX_MASK)) { // Caso aperte Botao 3
       for (int i = 0; i < 5; i++) {
         _pio_set(LED3_PIO, LED3_PIO_IDX_MASK);
